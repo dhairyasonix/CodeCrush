@@ -1,51 +1,34 @@
 const express = require("express");
+const connectDB = require("./config/database")
+const User = require("./models/user")
 const app = express();
-const {adminAuth,UserAuth} = require("./Middleware/auth")
 
+app.post("/signup", async(req, res) => {
+    const user = new User({
+        firstName: "Dhairya",
+        lastName: "Soni",
+        emailId: "dhairya@soni.com",
+        password: "dhairya123"
+    })
+try {
+    await user.save();
+    res.send("user added sucessfully")
 
-app.use("/test", (req, res) => {
-    res.send("wellcomt to test page")
-});
-
-app.get("/user/login",(req,res)=>{
-res.send("login info")
-
-})
-
-app.use("/user/data",UserAuth,(req,res)=>{
-res.send("user data")
-
-})
-
-app.use("/admin",adminAuth)
-
-app.get("/admin/admindata",(req,res)=>{
-
-    try {
-        // db call or something
-        res.send("Here is admin data")
-    } catch (error) {
-        res.status(500).send("uncaught error")
-    }
-
-
-})
-app.delete("/admin/deletedata",(req,res)=>{
-    throw new Error("errorer");
+} catch (error) {
+    res.status(400).send("Error saving the user",error.message)
+}
     
-res.send("data deleted")
-
 })
 
-app.use("/",(err,req,res,next)=>{
+connectDB().then(() => {
 
-    if (err){
-        res.status(500).send("uncaught error")
-    }
-
+    console.log("Database connection establish..")
+    app.listen(7777, () => {
+        console.log("listning to 7777")
+    })
+}).catch((err) => {
+    console.error("Database cannot be connected")
 })
 
 
-app.listen(7777, () => {
-    console.log("listning to 7777")
-})
+
