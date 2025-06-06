@@ -142,16 +142,10 @@ Nodemon automatically restarts the server when files change.
      "mongodb+srv://<username>:<password>@<cluster-address>/myDatabase?retryWrites=true&w=majority";
 
    const connectDB = async () => {
-     try {
-       await mongoose.connect(MONGO_URI, {
-         useNewUrlParser: true,
-         useUnifiedTopology: true,
-       });
-       console.log("Database connection established.");
-     } catch (err) {
-       console.error("Database connection failed: ", err.message);
-       process.exit(1);
-     }
+     
+       await mongoose.connect(MONGO_URI);
+       
+     } 
    };
 
    module.exports = connectDB;
