@@ -1,0 +1,294 @@
+start with git init 
+
+//HOW TO SETUP EXPRESS//
+set up the express package by -  npm i express
+create .gitingnore file to ingnore node_module
+
+create src folder -> app.js
+
+inside that folder setup express && create midleware && listen to port- **
+
+const express = require("express");
+const app = express()
+
+
+app.get("/user",  (req, res) => {     
+   
+
+    try {
+        
+        res.send("this is user data")
+    } catch (error) {
+        res.status(404).send("something went wrong", error.message)
+    }
+});
+
+
+ app.listen(7777, () => {
+        console.log("listning to 7777")
+    })
+**
+
+//HOW TO SETUP NODEMON//
+check if it installed or not 
+command
+if it is not installed globally run this command
+npm install -g nodemon
+
+setup scrip to run with npm run dev 
+ex- "scripts": {
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js"
+  }
+
+  
+next step-
+
+//HOW TO SETUP DATABASE mongodb//
+
+login to account create cluster bu select plan 
+create a string put idp there 
+sting should look like this - 
+mongodb+srv://<user_id>:<db_password>@namastenode.cvl8pfq.mongodb.net/
+
+download compass connect from mongo db with that string-- (not working? then allow ip adress )error
+
+next step- 
+
+//HOW TO SETUP mongoose//
+ run command npm i mongoose
+
+create a folder src-> config-> database.js 
+ then configure mongoose like 
+**
+const mongoose = require("mongoose")
+
+const connectDB = async()=>{
+await mongoose.connect("mongodb+srv://sonidhairya160:Twb4jokP3f2UAmVf@namastenode.cvl8pfq.mongodb.net/codeCrush")
+}
+
+module.exports = connectDB;
+
+**
+
+note-  we should listen to port after we connect to database
+so update app.js 
+
+insted of last line - 
+app.listen(7777, () => {
+        console.log("listning to 7777")
+    })
+
+replace with 
+connectDB().then(() => {
+
+    console.log("Database connection establish..")
+    app.listen(7777, () => {
+        console.log("listning to 7777")
+    })
+}).catch((err) => {
+    console.error("Database cannot be connected")
+})
+
+dont forget to add on top - 
+const connectDB = require("./config/database")
+
+**
+
+now create a schema 
+
+create a folder inside src->models->user.js
+
+**
+const mongoose = require("mongoose");
+//this how we create schema by mongoose.Schema
+
+const userSchema = new mongoose.Schema({
+    firstName: {
+        type: String,
+    },
+    lastName: {
+        type: String,
+    },
+    emailId: {
+        type: String,
+    },
+    password: {
+        type: String,
+    },
+    age: {
+        type: Number,
+    },
+    gender: {
+        type: String,
+    }
+});
+// then create mongoose.model with model name ex User and pass userSchema 
+
+module.exports = mongoose.model("User", userSchema)
+
+**
+
+
+in app.js import this ex
+
+const User = require("./models/user")
+
+now we can perform curd opration on database with user collection/ doccument -- correct this im not sure
+
+creating new user in db alwayas use async and await 
+
+const user = new User(req.body)
+  await user.save();
+
+with api oprations
+
+// sign up api to create user with user data and save in db
+app.post("/signup", async (req, res) => {
+    const user = new User(req.body)
+    
+    try {
+        await user.save();
+        res.send("user added sucessfully")
+
+    } catch (error) {
+        res.status(400).send("Error saving the user", error.message)
+    }
+})
+
+new app.js will look like this **
+
+const express = require("express");
+const connectDB = require("./config/database")
+const User = require("./models/user")
+const app = express();
+
+app.use(express.json());
+
+// sign up api to create user with user data and save in db
+app.post("/signup", async (req, res) => {
+    const user = new User(req.body)
+    
+    try {
+        await user.save();
+        res.send("user added sucessfully")
+
+    } catch (error) {
+        res.status(400).send("Error saving the user", error.message)
+    }
+})
+
+// to find one by matching email id
+app.get("/user", async (req, res) => {
+    const userEmail = req.body.emailId
+
+    try {
+        const user = await User.findOne({ emailId: userEmail })
+        res.send(user)
+    } catch (error) {
+        res.status(404).send("something went wrong", error.message)
+    }
+})
+//delete by user id
+app.delete("/user",async(req,res)=>{
+ const id= req.body.userId
+ try {
+    await User.findByIdAndDelete(id)
+    res.send("user deleted sucessfully")
+ } catch (error) {
+    res.status(404).send("something went wrong", error.message)
+ }
+});
+
+
+// update by user id
+app.patch("/user",async(req,res,next)=>{
+const id = req.body.userId
+if(!id){return next()}
+const data = req.body
+
+try {
+  await  User.findByIdAndUpdate(id,data)
+    res.send("sucessfully updated")
+} catch (error) {
+    res.status(404).send("something went wrong", error.message)
+}
+
+})
+app.patch("/user",async(req,res,next)=>{
+const emailId = req.body.emailId
+
+const data = req.body
+
+try {
+  await  User.updateMany({emailId: emailId},data)
+    res.send("sucessfully updated")
+} catch (error) {
+    res.status(404).send("something went wrong", error.message)
+}
+
+})
+
+
+// get data by user id
+app.get("/userid", async (req, res) => {
+    const id = req.body.id
+
+    try {
+        const user = await User.findById(id)
+        res.send(user)
+
+    } catch (error) {
+        res.status(404).send("something went wrong", error.message)
+    }
+
+})
+
+
+// Feed api to get all users
+app.get("/feed", async (req, res) => {
+    try {
+        const user = await User.find({})
+        res.send(user)
+    } catch (error) {
+        res.status(404).send("something went wrong", error.message)
+    }
+
+})
+
+connectDB().then(() => {
+
+    console.log("Database connection establish..")
+    app.listen(7777, () => {
+        console.log("listning to 7777")
+    })
+}).catch((err) => {
+    console.error("Database cannot be connected")
+})
+
+
+
+
+
+**
+
+-- ADDING Validators from schema
+
+mongoose db document -> schema types -> you add validation "works for new data" ex-
+firstName: {
+        type: String,
+        required: true,
+        trim: true,
+        minLength:4,
+
+    }
+
+if want to update data with validation then add option 3rd arg on model."insde the functn" as 
+{
+runValidators: true,
+
+  }
+
+
+
+
