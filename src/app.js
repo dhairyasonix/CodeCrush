@@ -42,13 +42,20 @@ app.delete("/user",async(req,res)=>{
 
 
 // update by user id
-app.patch("/user",async(req,res,next)=>{
-const id = req.body.userId
-if(!id){return next()}
+app.patch("/user/:userId",async(req,res,next)=>{
+const id = req.params?.userId
+
 const data = req.body
 
 try {
-  await  User.findByIdAndUpdate(id,data,{
+ const allowedUpdate = ["skills", "photoUrl","gender","age","about"]
+ const updateAloowed = Object.keys(data).every((k)=> allowedUpdate.includes(k))
+if(!updateAloowed){
+    throw new Error("Update contains invalid fields")
+}
+
+
+await  User.findByIdAndUpdate(id,data,{
 runValidators: true,
 
   })
@@ -58,19 +65,7 @@ runValidators: true,
 }
 
 })
-app.patch("/user",async(req,res,next)=>{
-const emailId = req.body.emailId
 
-const data = req.body
-
-try {
-  await  User.updateMany({emailId: emailId},data)
-    res.send("sucessfully updated")
-} catch (error) {
-    res.status(404).send("something went wrong", error.message)
-}
-
-})
 
 
 // get data by user id
