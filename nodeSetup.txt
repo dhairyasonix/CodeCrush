@@ -289,6 +289,14 @@ runValidators: true,
 
   }
 
+add a validators fron api level or schema level
+
+install validator npm module,
+add valiidator in schema **
+
+var validator = require('validator');
+
+validator.isEmail('foo@bar.com'); //=> true
 
 
-
+**
