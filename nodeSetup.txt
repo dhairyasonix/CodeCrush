@@ -300,3 +300,34 @@ validator.isEmail('foo@bar.com'); //=> true
 
 
 **
+
+senitise validation from api 
+
+extract only data from req that is required or in use 
+ex {firstname,lastname} =data.body
+
+
+HOW to sucure password -
+npm i bcrypt 
+
+use bcrypt.hash()
+and to validate 
+
+
+for jwt validation 
+
+setup the cookie 
+1 install cookie parser 
+-npm i cookie-parser
+in login after validation 
+setup res.cookie(token , token_value)
+
+in profile api check for cookie by 
+
+const cookie = req.cookie()
+const {token} = cookie;
+
+
+HOW to setup jwt token
+start with npm i jsonwebtoken
+
