@@ -14,5 +14,16 @@ const validateSignUpData = (req) => {
 
 };
 
+const validateProfileEdit =(req)=>{
+    const allowedEditFields = ["age","gender","photoUrl","skills","firstName","lastName"]
+    
+    const isAllowed = Object.keys(req.body).every(feild=> allowedEditFields.includes(feild));
 
-module.exports = { validateSignUpData }
+if(!isAllowed){
+    throw new Error("Profile data is not validated")
+}
+
+}
+
+
+module.exports = { validateSignUpData,validateProfileEdit }
