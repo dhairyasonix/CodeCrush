@@ -77,6 +77,9 @@ const userSchema = new mongoose.Schema(
                     throw new Error("length exicted add upto 5 skills")
                 }
             }
+        },
+        about:{
+            type:String
         }
     }, { timestamps: true });
 
