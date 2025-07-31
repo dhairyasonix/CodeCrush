@@ -21,6 +21,8 @@ const connectionRequestSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+//creating index for optimizaton
+connectionRequestSchema.index({fromUserId:1,toUserId:1}) 
 // pre model to check to and from are same
 connectionRequestSchema.pre("save", function (next) {
   const connectionRequest = this;
