@@ -13,8 +13,9 @@ app.use(express.json());
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
+const userRoute = require("./routes/user")
 
-app.use("/",authRouter,profileRouter,requestRouter)
+app.use("/",authRouter,profileRouter,requestRouter,userRoute)
 
 
 // to find one by matching email id

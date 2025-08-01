@@ -73,7 +73,7 @@ if(!connectionRequest){
 
 connectionRequest.status = status;
 const data = await connectionRequest.save()
-res.status(200).json({message:"C0nnection request " + status, data})
+res.status(200).json({message:"Connection request " + status, data})
   
 } catch (error) {
   res.status(400).send("Something went wrong " + error.message);

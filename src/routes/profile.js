@@ -19,7 +19,7 @@ profileRouter.patch("/profile/edit", UserAuth, async (req, res) => {
   try {
     validateProfileEdit(req);
     const logedInUser = req.user;
-    console.log(logedInUser);
+    
     Object.keys(req.body).forEach((key) => (logedInUser[key] = req.body[key]));
     await logedInUser.save();
     res.json({
@@ -44,7 +44,7 @@ profileRouter.patch("/profile/password", async (req, res) => {
 
     //validating user enterd password ref- user schema
     const isValidPassword = await user.validateUserPassword(oldPassword);
-    console.log(isValidPassword)
+
     if (isValidPassword) {
       const passwordHash = await bcrypt.hash(newPassword, 10);
       user.password = passwordHash;
