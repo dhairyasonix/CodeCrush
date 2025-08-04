@@ -2,6 +2,7 @@ const express = require("express")
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const { validateSignUpData } = require("../utils/validation");
+const {SAFE_USER_DATA} =require("../constants/userConstants")
 
 const authRouter =express.Router();
 
@@ -31,7 +32,7 @@ authRouter.post("/signup", async (req, res) => {
 authRouter.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
-    const user = await User.findOne({ emailId: emailId });
+    const user = await User.findOne({ emailId: emailId })
     if (!user) {
       throw new Error("Invalid credencial");
     }
@@ -41,11 +42,16 @@ authRouter.post("/login", async (req, res) => {
     if (isValidPassword) {
       // creating jwt token ref- user schema
       const webToken = await user.getJWT(); // expiring the jwt token check schema
-
+const userObj = user.toObject();
+// filtring data
+const safeUser = SAFE_USER_DATA.split(" ").reduce((acc, field) => {
+  if (userObj[field] !== undefined) acc[field] = userObj[field];
+  return acc;
+}, {});
       res.cookie("token", webToken, {
         expires: new Date(Date.now() + 8 * 3600000),
       }); // expiring the cookie
-      res.send("Login Sucessfull");
+      res.send(safeUser);
     } else {
       throw new Error("Invalid credencial 2");
     }
