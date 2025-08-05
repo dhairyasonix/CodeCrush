@@ -244,7 +244,6 @@ app.post("/signup", async (req, res) => {
     res.status(400).send("Error saving the user: " + error.message);
   }
 });
-
 // -------------------------------------------------
 // 2) GET USER BY EMAIL: Find one user by emailId
 // -------------------------------------------------
