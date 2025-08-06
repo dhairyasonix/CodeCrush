@@ -8,10 +8,24 @@ import { BASE_URL } from "../utils/constants";
 const Login = () => {
   const [emailId, setEmailId] = useState("dhairya@gmail.com");
   const [password, setPassword] = useState("Dhairya@123");
+  const [error,setError]=useState("")
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+   const validateForm = (email, pass) => {
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const passValid = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/.test(pass);
+    if(!emailValid){setError("Invalid Email"); 
+      return false}
+    if(!passValid){setError("Invalid Password")
+      return false
+    }
+    setError("")
+    return true
+  };
+
   const handleLogin = async () => {
+    if(!validateForm(emailId,password)) return;
     try {
       const res = await axios.post(
         BASE_URL+"/login",
@@ -27,7 +41,8 @@ const Login = () => {
       dispatch(addUser(res.data));
      return navigate("/feed")
     } catch (error) {
-      console.error(error);
+      setError(error?.response?.data || "Something went wrong")
+     
     }
   };
 
@@ -96,26 +111,23 @@ const Login = () => {
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
+                  setError("")
                 }}
                 type="password"
                 required
                 placeholder="Password"
                 minLength="5"
                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}"
-                title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                title="Must be more than 5 characters, including number, lowercase letter, uppercase letter"
               />
             </label>
 
-            <p className="validator-hint hidden">
-              Must be more than 5 characters, including
-              <br />
-              At least one number <br />
-              At least one lowercase letter <br />
-              At least one uppercase letter
-            </p>
+            <div className="validator-hint hidden">
+              Enter valid password
+            </div>
           </div>
         </div>
-
+<p className="text-[oklch(71%_0.194_13.428)]">{error}</p>
         <div className="card-actions  justify-center">
           <button onClick={handleLogin} className="btn btn-wide bg-blue-500">
             Login
