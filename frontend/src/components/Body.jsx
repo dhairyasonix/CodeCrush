@@ -19,7 +19,6 @@ try {
   withCredentials:true,
 });
 dispatch(addUser(res.data))
-console.log(res)
 
 
 } catch (error) {

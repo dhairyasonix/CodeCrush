@@ -68,7 +68,7 @@ const hideUser = new Set();
       hideUser.add(reqs.fromUserId.toString());
       hideUser.add(reqs.toUserId.toString());
     });
-    console.log(hideUser)
+ 
 
     const users = await User.find({
         $and:[{ _id: {$nin: Array.from(hideUser)}},
