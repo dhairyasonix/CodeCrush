@@ -3,12 +3,14 @@ import React, { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../utils/feedSlice";
+import { UserCard } from "./UserCard";
 
 const Feed = () => {
   const dispatch = useDispatch();
   const feed = useSelector((store) => store.feed);
 
   const getFeed = async () => {
+    
    
     try {
 
@@ -20,8 +22,8 @@ const Feed = () => {
          withCredentials: true,
         }
       );
-      console.log(res.data)
-      dispatch(addFeed(res.data));
+      
+      dispatch(addFeed(res?.data?.users));
     } catch (error) {
       console.error(error);
     }
@@ -31,7 +33,7 @@ const Feed = () => {
     
   }, []);
 
-  return <div>Feed</div>;
+  return feed&& (<div className="flex justify-center mt-10"><UserCard user={feed[0]}/></div>);
 };
 
 export default Feed;
