@@ -33,7 +33,7 @@ const Feed = () => {
     
   }, []);
 
-  return feed&& (<div className="flex justify-center mt-10"><UserCard user={feed[0]}/></div>);
+  return feed && (<div className="flex justify-center mt-10"><UserCard user={feed[0]}  hideActions={false}/></div>);
 };
 
 export default Feed;
