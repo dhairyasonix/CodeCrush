@@ -51,6 +51,7 @@ const EditProfile = ({ user }) => {
         {
           firstName,
           lastName,
+          photoUrl,
           age,
           gender: gender.toLowerCase(),
           about,
@@ -106,7 +107,7 @@ const EditProfile = ({ user }) => {
             <input
               value={photoUrl}
               onChange={(e) => setPhotoUrl(e.target.value)}
-              type="url"
+              type="text"
               placeholder="Photo Url"
               required
             />

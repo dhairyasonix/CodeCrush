@@ -14,7 +14,7 @@ const Login = () => {
 
    const validateForm = (email, pass) => {
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const passValid = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/.test(pass);
+    const passValid = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,}$/.test(pass);
     if(!emailValid){setError("Invalid Email"); 
       return false}
     if(!passValid){setError("Invalid Password")
