@@ -47,14 +47,15 @@ dispatch(addConnection(res?.data?.filteredConnections))
     <h2 className="card-title">{firstName + " "+ lastName}</h2>
     {gender && age && <h2 className="card-title">{age + " "+ gender}</h2>}
     <p>{about}</p>
-    <div>
+    <div className="flex justify-between"><div>
           {skills.map((s,i) => (
             <span key={i} className="badge mr-2">{s}</span>
           ))}
         </div>
     <div className="card-actions justify-end">
       <button className="btn btn-primary">Chat</button>
-    </div>
+    </div></div>
+    
   </div>
 </div>
 })}</div>

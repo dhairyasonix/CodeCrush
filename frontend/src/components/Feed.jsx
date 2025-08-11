@@ -33,6 +33,9 @@ const Feed = () => {
     
   }, []);
 
+  if(!feed) return;
+  if(feed.length === 0) return <h1 className=" flex justify-center text-3xl mt-4 font-bold">No more user found</h1>
+
   return feed && (<div className="flex justify-center mt-10"><UserCard user={feed[0]}  hideActions={false}/></div>);
 };
 
