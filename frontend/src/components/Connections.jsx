@@ -27,7 +27,7 @@ dispatch(addConnection(res?.data?.filteredConnections))
 
     if(!connections)return;
     if(connections.length ===0 )return(
-      <h1>No connection found!</h1>
+      <h1 className="flex justify-center text-3xl mt-4 font-bold">No connection found!</h1>
     )
 
   return (

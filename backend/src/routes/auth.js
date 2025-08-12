@@ -9,7 +9,7 @@ const authRouter =express.Router();
 // sign up api to create user with user data and save in db
 authRouter.post("/signup", async (req, res) => {
   try {
-    // validation the data
+   
     validateSignUpData(req);
     // password encription
     const { password, firstName, lastName, emailId } = req.body;
@@ -22,8 +22,18 @@ authRouter.post("/signup", async (req, res) => {
       emailId,
       password: passwordHash,
     });
-    await user.save();
-    res.send("user added sucessfully");
+    const savedUser = await user.save();
+    const webToken = await savedUser.getJWT(); // expiring the jwt token check schema
+const userObj = savedUser.toObject();
+// filtring data
+const safeUser = SAFE_USER_DATA.split(" ").reduce((acc, field) => {
+  if (userObj[field] !== undefined) acc[field] = userObj[field];
+  return acc;
+}, {});
+      res.cookie("token", webToken, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      }); // expiring the cookie
+      res.send(safeUser);
   } catch (error) {
     res.status(400).send("Error saving the user " + error.message);
   }

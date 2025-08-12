@@ -40,7 +40,7 @@ export const UserCard = ({ user = {}, hideActions}) => {
         </p>
         <div>
           {skills.map((s,i) => (
-            <span key={i} className="badge mr-2">{s}</span>
+            <span key={i} className="badge mr-2 my-1">{s}</span>
           ))}
         </div>
         {!hideActions && <div className="card-actions justify-center">
