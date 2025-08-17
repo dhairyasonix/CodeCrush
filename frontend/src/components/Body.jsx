@@ -19,6 +19,7 @@ try {
   withCredentials:true,
 });
 dispatch(addUser(res.data))
+navigate("/feed")
 
 
 } catch (error) {
