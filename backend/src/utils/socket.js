@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const User = require("../models/user");
 const { SAFE_USER_DATA } = require("../constants/userConstants");
+const { Chat } = require("../models/chat");
 
 const getSecretRoomId = (userId, targetUserId) => {
   return crypto
@@ -26,7 +27,7 @@ const initializeSocket = (server) => {
       const user = await User.findById(decoded._id).select(SAFE_USER_DATA);
       if (!user) return next(new Error("User not found"));
 
-      socket.user = user; // store user info 
+      socket.user = user; // store user info
       next();
     } catch (err) {
       next(new Error("Authentication failed"));
@@ -44,13 +45,36 @@ const initializeSocket = (server) => {
     });
 
     // Send message
-    socket.on("sendMessage", ({ targetUserId, text }) => {
-      const roomId = getSecretRoomId(socket.user._id.toString(), targetUserId);
-      // console.log(`${socket.user.firstName}: ${text}`);
-      io.to(roomId).emit("messageReceived", {
-        firstName: socket.user.firstName,
-        text,
-      });
+    socket.on("sendMessage", async ({ targetUserId, text }) => {
+      try {
+        const roomId = getSecretRoomId(
+          socket.user._id.toString(),
+          targetUserId
+        );
+        // console.log(`${socket.user.firstName}: ${text}`);
+        // save message to db
+
+        let chat = await Chat.findOne({
+          participants: { $all: [socket.user._id, targetUserId] },
+        });
+
+        if (!chat) {
+          chat = new Chat({
+            participants: [socket.user._id, targetUserId],
+            messages: [],
+          });
+        }
+
+        chat.messages.push({ senderId: socket.user._id, text });
+        await chat.save();
+        io.to(roomId).emit("messageReceived", {
+          firstName: socket.user.firstName,
+          lastName: socket.user.lastName,
+          text,
+        });
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     socket.on("disconnect", () => {
