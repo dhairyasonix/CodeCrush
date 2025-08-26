@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { NavBar } from './NavBar'
 import { Outlet, useNavigate } from 'react-router-dom'
 import Footer from './Footer'
@@ -19,7 +19,9 @@ try {
   withCredentials:true,
 });
 dispatch(addUser(res.data))
-navigate("/feed")
+
+if (location.pathname === '/' || location.pathname === '/login') {
+        navigate('/feed');}
 
 
 } catch (error) {

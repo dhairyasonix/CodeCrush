@@ -10,7 +10,7 @@ const Requests = () => {
 
   const reviewRequest = async(status,_id)=>{
     try {
-       const res = await axios.post(BASE_URL+"/request/review/"+status+"/"+_id,{},{withCredentials:true})
+        await axios.post(BASE_URL+"/request/review/"+status+"/"+_id,{},{withCredentials:true})
        dispatch(removeRequest(_id))
     } catch (error) {
       console.error(error)
@@ -44,9 +44,9 @@ if(!requests)return;
     <div>
 <h1 className="text-center my-4 text-3xl font-bold">Requests</h1>
 <div>{requests.map((request)=>{
-  const {firstName,lastName,about,age,gender,photoUrl,skills}=request.fromUserId
+  const {_id,firstName,lastName,about,age,gender,photoUrl,skills}=request.fromUserId
 
-  return<div className="card card-side bg-base-300 shadow-sm w-1/2 mx-auto mb-4">
+  return<div key={_id} className="card card-side bg-base-300 shadow-sm w-1/2 mx-auto mb-4">
 <figure className="w-56 h-60 flex-shrink-0">
   <img
     className="w-full h-full justify-center items-center object-cover rounded-l-lg"
@@ -59,8 +59,8 @@ if(!requests)return;
     {gender && age && <h2 className="card-title">{age + " "+ gender}</h2>}
     <p>{about}</p>
     <div>
-          {skills.map((s,i) => (
-            <span key={i} className="badge mr-2">{s}</span>
+          {skills.map((s,index) => (
+            <span key={index} className="badge mr-2">{s}</span>
           ))}
         </div>
     <div className="card-actions justify-end">

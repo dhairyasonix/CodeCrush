@@ -1,5 +1,6 @@
 const express = require("express");
 const connectDB = require("./config/database");
+const { createServer } = require('node:http');
 const app = express();
 const cors = require("cors");
 const cookieparser = require("cookie-parser");
@@ -13,15 +14,17 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRoute = require("./routes/user");
+const initializeSocket = require("./utils/socket");
 
 app.use("/", authRouter, profileRouter, requestRouter, userRoute);
 
-// to find one by matching email id
+const server = createServer(app);
+initializeSocket(server)
 
 connectDB()
   .then(() => {
     console.log("Database connection establish..");
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log("listning to 7777");
     });
   })
