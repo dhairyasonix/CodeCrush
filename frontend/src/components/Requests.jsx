@@ -46,7 +46,7 @@ if(!requests)return;
 <div>{requests.map((request)=>{
   const {_id,firstName,lastName,about,age,gender,photoUrl,skills}=request.fromUserId
 
-  return<div key={_id} className="card card-side bg-base-300 shadow-sm w-1/2 mx-auto mb-4">
+  return<div key={_id} className="card card-side bg-base-300 shadow-sm w-[90%] md:w-1/2 mx-auto mb-4">
 <figure className="w-56 h-60 flex-shrink-0">
   <img
     className="w-full h-full justify-center items-center object-cover rounded-l-lg"

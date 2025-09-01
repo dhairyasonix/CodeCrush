@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const User = require("../models/user");
 const { SAFE_USER_DATA } = require("../constants/userConstants");
 const { Chat } = require("../models/chat");
+const ConnectionRequest = require("../models/connectionRequest");
 
 const getSecretRoomId = (userId, targetUserId) => {
   return crypto
@@ -38,10 +39,65 @@ const initializeSocket = (server) => {
     console.log(`User connected: ${socket.user.firstName}`);
 
     // Join chat
-    socket.on("joinChat", ({ targetUserId }) => {
-      const roomId = getSecretRoomId(socket.user._id.toString(), targetUserId);
-      // console.log(`${socket.user.firstName} joined room: ${roomId}`);
-      socket.join(roomId);
+    socket.on("joinChat", async ({ targetUserId }) => {
+      try {
+        console.log(socket.user._id ,"ids",targetUserId )
+        // Check if there is an accepted connection between the two users
+        const existingConnection = await ConnectionRequest.findOne({
+          $or: [
+            {
+              fromUserId: socket.user._id,
+              toUserId: targetUserId,
+              status: "accepted",
+            },
+            {
+              fromUserId: targetUserId,
+              toUserId: socket.user._id,
+              status: "accepted",
+            },
+          ],
+        });
+      
+
+        if (!existingConnection) {
+          // If no connection exists, send error back to client
+          socket.emit("errorMessage", {
+            message: "You are not connected with this user.",
+          });
+          return;
+        }
+
+        let chat = await Chat.findOne({
+          participants: { $all: [socket.user._id, targetUserId] },
+        });
+
+        if (!chat) {
+          chat = new Chat({
+            participants: [socket.user._id, targetUserId],
+            messages: [],
+          });
+          await chat.save();
+        }
+        
+
+        // Generate a unique room ID and join the room
+        const roomId = getSecretRoomId(
+          socket.user._id.toString(),
+          targetUserId.toString()
+        );
+        socket.join(roomId);
+
+        // Optional: Notify the user of successful join
+        socket.emit("joinedChat", {
+          roomId,
+          message: "Successfully joined the chat room.",
+        });
+      } catch (error) {
+        console.error("Error in joinChat:", error);
+        socket.emit("errorMessage", {
+          message: "An error occurred while joining the chat.",
+        });
+      }
     });
 
     // Send message

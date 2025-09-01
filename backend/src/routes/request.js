@@ -4,8 +4,7 @@ const { UserAuth } = require("../Middleware/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 
-requestRouter.post(
-  "/request/send/:status/:userID",
+requestRouter.post("/request/send/:status/:userID",
   UserAuth,
   async (req, res) => {
     try {

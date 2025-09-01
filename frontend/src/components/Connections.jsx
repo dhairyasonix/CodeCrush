@@ -42,7 +42,8 @@ export const Connections = () => {
             connection;
           return (
             <div key={_id} className="card card-side bg-base-300 shadow-sm w-[90%] md:w-1/2 mx-auto mb-4">
-              <figure className="w-32 h-44 md:w-56 md:h-64 flex-shrink-0">
+              <figure className="w-32 h-44 md:w-56 md:h-64
+               flex-shrink-0">
                 <img
                   className="w-full h-full justify-center items-center object-cover rounded-l-lg"
                   src={photoUrl}

@@ -9,7 +9,7 @@ export const UserCard = ({ user = {}, hideActions}) => {
 
   const hendleSendRequest = async(status,userId)=>{
     try {
-      const res = await axios.post(BASE_URL+"/request/send/"+status+"/"+userId,{},{
+      await axios.post(BASE_URL+"/request/send/"+status+"/"+userId,{},{
         withCredentials:true
       })
       dispatch(removeUserFromFeed(userId))
@@ -20,7 +20,7 @@ export const UserCard = ({ user = {}, hideActions}) => {
   }
  
   return (
-    <div className="card bg-base-300 w-80 shadow-sm">
+    <div className="card bg-base-300 w-full md:w-80 shadow-sm">
       <figure>
         <img className="w-full" src={photoUrl} alt="Shoes" />
       </figure>

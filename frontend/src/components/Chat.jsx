@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { cerateSocketConnection } from "../utils/socket";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -13,7 +13,8 @@ const Chat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [chatPatner, setChatPatner] = useState(null);
   const socketRef = useRef(null);
-    const chatContainerRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const navigate = useNavigate();
 
   const fetchChatMessages = async () => {
     const chat = await axios(BASE_URL + "/chat/" + targetUserId, {
@@ -37,25 +38,39 @@ const Chat = () => {
     });
     setMessage(chatMessages);
   };
+
   useEffect(() => {
-    fetchChatMessages();
-  }, []);
-    useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [message]);
 
-
   useEffect(() => {
     if (!user) return;
+    if (!targetUserId || targetUserId.length !== 24){
+      console.error("Invalid target user ID");
+    navigate("/connections"); // redirect to connections if invalid
+    return;
+    }
     const socket = cerateSocketConnection();
     socketRef.current = socket;
     socket.emit("joinChat", { targetUserId });
+    socket.on("joinedChat", () => {
+      fetchChatMessages();
+    });
+    socket.on("errorMessage", ({ message }) => {
+      console.error(message);
+      alert(message);
+      navigate("/connections"); 
+      // You can replace with a toast notification
+    });
     socket.on("messageReceived", ({ firstName, lastName, text }) => {
       setMessage((message) => [...message, { firstName, lastName, text }]);
     });
     return () => {
+      socket.off("errorMessage");
+      socket.off("joinChat");
       socket.disconnect();
     };
   }, [_id, targetUserId, firstName]);
@@ -75,11 +90,13 @@ const Chat = () => {
     <div className="flex justify-center p-6">
       <div className="card bg-base-300 w-full sm:w-[80vh] h-[80vh] shadow-md flex flex-col">
         <div className="items-center flex h-14 ">
-{      chatPatner&&    <img
-            className="ml-4 w-10 rounded-full"
-            alt="Avatar"
-            src={chatPatner?.photoUrl}
-          />}
+          {chatPatner && (
+            <img
+              className="ml-4 w-10 rounded-full"
+              alt="Avatar"
+              src={chatPatner?.photoUrl}
+            />
+          )}
           <h1 className="mx-2 py-4 text-xl font-bold border-b border-base-200">
             {chatPatner
               ? `${chatPatner.firstName} ${chatPatner.lastName}`
@@ -87,7 +104,10 @@ const Chat = () => {
           </h1>
         </div>
 
-        <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-4 py-2 space-y-4 bg-base-200">
+        <div
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto px-4 py-2 space-y-4 bg-base-200"
+        >
           {message.map((msg, index) => {
             return (
               <div
@@ -101,7 +121,6 @@ const Chat = () => {
               </div>
             );
           })}
-         
         </div>
 
         <form

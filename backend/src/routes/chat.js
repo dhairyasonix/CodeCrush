@@ -20,11 +20,7 @@ chatRouter.get("/chat/:targetUserId", UserAuth, async (req, res) => {
     })  ;
     if (!chat) {
       // TODO check connection exixt in db
-      chat = new Chat({
-        participants: [userId, targetUserId],
-        messages: [],
-      });
-      await chat.save();
+   throw new error("Chat not found")
     }
     res.json(chat);
   } catch (error) {
