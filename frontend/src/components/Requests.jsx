@@ -3,10 +3,12 @@ import React, { useEffect } from 'react'
 import { BASE_URL } from '../utils/constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { addRequests, removeRequest } from '../utils/requestSlice'
+import { useNavigate } from 'react-router-dom'
 
 const Requests = () => {
   const dispatch =useDispatch()
   const requests = useSelector(store=>store.requests)
+  const navigate = useNavigate()
 
   const reviewRequest = async(status,_id)=>{
     try {
@@ -33,11 +35,49 @@ dispatch(addRequests(res?.data?.data))
   useEffect(()=>{
     fetchRequest()
   },[])
+  const requestHints = [
+  "Keep your profile complete and add attractive photos.",
+  "Be active on the feed to get noticed by more users.",
+  "Send thoughtful connection requests to increase your chances of getting one back."
+];
 
 
 if(!requests)return;
     if(requests.length ===0 )return(
-      <h1 className='flex justify-center text-3xl mt-4 font-bold w-full'>No Request found!</h1>
+     <div className="flex flex-col items-center justify-center mt-20">
+  <h1 className="text-2xl font-bold mb-4">📭 No Requests Found</h1>
+  <p className="text-lg text-center mx-4 text-gray-500 mb-8">
+    Looks like no one has sent you a request yet. Check back later or explore the feed.
+  </p>
+  
+  <div className="flex gap-4">
+    <button 
+      className="btn btn-primary"
+      onClick={() => navigate("/feed")}
+    >
+      🔍 Explore Feed
+    </button>
+    <button 
+      className="btn btn-secondary"
+      onClick={() => navigate("/profile")}
+    >
+      ✏️ Update Profile
+    </button>
+  </div>
+
+  <div className="bg-base-200 shadow-md rounded-lg p-6 max-w-lg mx-auto mt-10">
+    <h2 className="text-lg font-bold mb-4 text-center">
+      💡 Tips to Get Requests
+    </h2>
+    <ul className="list-disc list-outside pl-6 space-y-2 text-gray-500">
+      {requestHints.map((hint, idx) => (
+        <li key={idx} className="pl-2 -indent-2">
+          {hint}
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
     )
 
   return (

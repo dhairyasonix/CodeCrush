@@ -39,12 +39,13 @@ if (location.pathname === '/' || location.pathname === '/login') {
   },[])
 
   return (
-    <div>
-      
-        <NavBar/>
-        <div className='min-h-screen'>< Outlet/></div>
-        <Footer/>
-    </div>
+   <div className="flex flex-col min-h-screen">
+    <NavBar />
+    <main className="flex-grow">
+      <Outlet />
+    </main>
+    <Footer />
+  </div>
   )
 }
 

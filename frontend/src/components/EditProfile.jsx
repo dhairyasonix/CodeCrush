@@ -72,13 +72,13 @@ const EditProfile = ({ user }) => {
   };
 
   return (
-    <div className=" flex justify-center gap-10 mt-4">
+    <div className=" flex md:flex-row flex-col justify-center gap-10 m-4">
       {showToast && <div className="toast toast-top toast-center z-10">
                 <div className="alert alert-success">
           <span>Profile updated successfully.</span>
         </div>
       </div>}
-      <div className="card card-border bg-base-300 w-96  ">
+      <div className="card card-border bg-base-300 md:w-96 w-full  ">
         <div className="card-body p-4">
           <h2 className="card-title justify-center text-lg">Edit Profile</h2>
 

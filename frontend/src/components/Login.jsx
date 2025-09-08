@@ -68,7 +68,7 @@ const Login = () => {
  }
 
   return (
-    <div className="card bg-base-300 w-96 mx-auto mt-[5%]">
+    <div className="card bg-base-300 w-full md:w-96 mx-auto mt-[15%] md:mt-[5%]">
       <div className="card-body">
 
         <h2 className="text-lg text-center justify-center mb-4">💟CodeCrush</h2>
