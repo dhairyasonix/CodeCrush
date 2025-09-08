@@ -46,7 +46,7 @@ const Feed = () => {
   if (!feed) return;
   if (feed.length === 0)
     return (
-         <div className="flex flex-col items-center justify-center mt-20">
+         <div className="flex flex-col items-center justify-center mx-4 lg:mx-auto mt-10 md:mt-20">
       <h1 className="text-2xl font-bold mb-4">🎉 You’re all caught up!</h1>
       <p className="text-lg text-center mx-4 text-gray-500 mb-8">
         No new people to show right now. In the meantime, check your connections.
@@ -81,7 +81,7 @@ const Feed = () => {
 
   return (
     feed && (
-      <div className="flex justify-center mt-10">
+      <div className="flex justify-center my-5 lg:mt-10 px-4">
         <UserCard user={feed[0]} hideActions={false} />
       </div>
     )

@@ -1,21 +1,26 @@
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
-import { removeUserFromFeed } from "../utils/feedSlice";
+import { addFeed, removeUserFromFeed } from "../utils/feedSlice";
 
 export const UserCard = ({ user = {}, hideActions}) => {
   const {_id, photoUrl, firstName,lastName,gender,age,skills,about } = user;
   const dispatch  = useDispatch()
 
   const hendleSendRequest = async(status,userId)=>{
+    dispatch(removeUserFromFeed(userId))
     try {
       await axios.post(BASE_URL+"/request/send/"+status+"/"+userId,{},{
         withCredentials:true
       })
-      dispatch(removeUserFromFeed(userId))
+      
   }
      catch (error) {
       console.error(error)
+      dispatch(addFeed(userId));
+
+    // Optional: show user feedback
+    alert("Something went wrong. Please try again.");
     }
   }
  

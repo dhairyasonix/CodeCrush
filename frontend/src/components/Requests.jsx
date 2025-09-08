@@ -44,7 +44,7 @@ dispatch(addRequests(res?.data?.data))
 
 if(!requests)return;
     if(requests.length ===0 )return(
-     <div className="flex flex-col items-center justify-center mt-20">
+     <div className="flex flex-col items-center justify-center mt-10 md:mt-20">
   <h1 className="text-2xl font-bold mb-4">📭 No Requests Found</h1>
   <p className="text-lg text-center mx-4 text-gray-500 mb-8">
     Looks like no one has sent you a request yet. Check back later or explore the feed.
@@ -65,7 +65,7 @@ if(!requests)return;
     </button>
   </div>
 
-  <div className="bg-base-200 shadow-md rounded-lg p-6 max-w-lg mx-auto mt-10">
+  <div className="bg-base-200 shadow-md rounded-lg p-6 max-w-lg mx-4 lg:mx-auto mt-10 md:mt-20">
     <h2 className="text-lg font-bold mb-4 text-center">
       💡 Tips to Get Requests
     </h2>
@@ -83,34 +83,40 @@ if(!requests)return;
   return (
     <div>
 <h1 className="text-center my-4 text-3xl font-bold">Requests</h1>
-<div>{requests.map((request)=>{
+<div className='px-4'>{requests.map((request)=>{
   const {_id,firstName,lastName,about,age,gender,photoUrl,skills}=request.fromUserId
 
-  return<div key={_id} className="card card-side bg-base-300 shadow-sm w-[90%] md:w-1/2 mx-auto mb-4">
-<figure className="w-56 h-60 flex-shrink-0">
-  <img
-    className="w-full h-full justify-center items-center object-cover rounded-l-lg"
-    src={photoUrl}
-    alt={firstName}
-  />
-</figure>
-  <div className="card-body">
-    <h2 className="card-title">{firstName + " "+ lastName}</h2>
-    {gender && age && <h2 className="card-title">{age + " "+ gender}</h2>}
-    <p>{about}</p>
-    <div>
-          {skills.map((s,index) => (
-            <span key={index} className="badge mr-2">{s}</span>
+  return<div className="card bg-base-300 w-full md:w-80 shadow-sm">
+      <figure>
+        <img className="w-full" src={photoUrl} alt="Shoes" />
+      </figure>
+      <div className="card-body">
+        <h2 className="card-title">
+         {firstName +' '+ lastName}
+          
+        </h2>
+        {gender && age && (
+            <div>
+              <span>{age}</span> <span>{gender.charAt(0).toUpperCase() + gender.slice(1)}</span>
+
+            </div>
+          )}
+        <p>
+          {about}
+        </p>
+        <div>
+          {skills.map((s,i) => (
+            <span key={i} className="badge mr-2 my-1">{s}</span>
           ))}
         </div>
-    <div className="card-actions justify-end">
-      <button className="btn btn-secondary" 
+         <div className="card-actions justify-center">
+          <button className="btn btn-secondary" 
       onClick={()=>reviewRequest("rejected",request._id)}>Reject</button>
       <button className="btn btn-primary"
       onClick={()=>reviewRequest("accepted",request._id)}>Accept</button>
+        </div>
+      </div> 
     </div>
-  </div>
-</div>
 })}</div>
 
     </div>
